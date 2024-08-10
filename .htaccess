@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Redirect to remove .php extension
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([^\.]+)$ $1.php [L]
+
+# Custom error pages
+ErrorDocument 404 /404.php
+
+
