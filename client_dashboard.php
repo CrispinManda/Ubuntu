@@ -1,5 +1,20 @@
 <?php include 'header.php'?>
 
+<?php
+// dashboard.php
+
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php"); // Redirect to login if not logged in
+    exit();
+}
+
+// Continue loading the dashboard...
+
+
+?>
+
   <!--  Body Wrapper -->
   <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
     data-sidebar-position="fixed" data-header-position="fixed">
