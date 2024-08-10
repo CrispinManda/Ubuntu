@@ -1,13 +1,9 @@
 
-
-
 <?php include 'header.php'?>
 <?php require 'db.php';?>
 
-<!--  Body Wrapper -->
-<?php
-// Include database connection file
 
+<?php
 
 // Initialize variables for messages
 $error_message = '';
@@ -52,7 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->bind_param('sssi', $name, $email, $hashed_password, $role_id);
 
                 if ($stmt->execute()) {
-                    $success_message = 'Registration successful. You can now <a href="login">sign in</a>.';
+                    header("Location: login");
+            exit(); // Ensure that the script stops executing after the redirect
+                    // $success_message = 'Registration successful. You can now <a href="login">sign in</a>.';
                 } else {
                     $error_message = 'An error occurred: ' . $stmt->error;
                 }
