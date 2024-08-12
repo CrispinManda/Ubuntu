@@ -2,7 +2,7 @@
     <div class="container-fluid sticky-top">
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-dark p-0">
-                <a href="index.html" class="navbar-brand">
+                <a href="<?php echo rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/'; ?>" class="navbar-brand">
                     <img src="img/black-cropped.png" alt="AI.Tech Logo" style="width: 120px; height: auto;">
                 </a>
 

@@ -34,6 +34,13 @@
     z-index: 0;
 }
 
+@media (max-width: 767.98px) {
+    .hero-header img {
+        display: none;
+    }
+}
+
+
 </style>
 
 
