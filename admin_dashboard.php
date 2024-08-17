@@ -68,6 +68,26 @@ if (!isset($_SESSION['user_id'])) {
                 <span class="hide-menu">Jobs</span>
               </a>
             </li>
+                        <li class='sidebar-item'>
+              <a class="sidebar-link" href="Profile" aria-expanded="false">
+                <span>
+                  <i class="ti ti-user fs-6"></i>
+                </span>
+                <span>
+                  <p class="mb-0 fs-3">My Profile</p>
+                </span>
+              </a>
+            </li>
+            <li class ='sidebar-item'>
+              <a class="sidebar-link" href="task" aria-expanded="false">
+                <span>
+                  <i class="ti ti-list-check fs-6"></i>
+                </span>
+                <span>
+                  <p class="mb-0 fs-3">Task</p>
+                </span>
+              </a>
+            </li>
           </ul>
 
         </nav>
@@ -104,17 +124,9 @@ if (!isset($_SESSION['user_id'])) {
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                   <div class="message-body">
-                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                    <a  href="profile" class="d-flex align-items-center gap-2 dropdown-item">
                       <i class="ti ti-user fs-6"></i>
                       <p class="mb-0 fs-3">My Profile</p>
-                    </a>
-                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
-                      <i class="ti ti-mail fs-6"></i>
-                      <p class="mb-0 fs-3">My Account</p>
-                    </a>
-                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
-                      <i class="ti ti-list-check fs-6"></i>
-                      <p class="mb-0 fs-3">My Task</p>
                     </a>
                     <a href="logout" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
                   </div>

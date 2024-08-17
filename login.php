@@ -6,6 +6,7 @@ require_once 'db.php';
 
 // Initialize variables for messages
 $error_message = '';
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve and sanitize input

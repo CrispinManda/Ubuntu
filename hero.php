@@ -7,8 +7,8 @@
                 <div class="btn btn-sm border rounded-pill text-white px-3 mb-3 animated slideInRight">AI.Tech</div>
                 <h6 class="display-4 text-white mb-4 animated slideInRight">Outsource from Our Pool of Talented Young Professionals</h6>
                 <p class="text-white mb-4 animated slideInRight">Tap into our diverse talent pool of skilled experts across various fields. Whether you need creative, technical, or administrative support, our qualified professionals are ready to help you do more. Streamline your projects and boost productivity by partnering with us today!</p>
-                <a href="" class="btn btn-light py-sm-3 px-sm-5 rounded-pill me-3 animated slideInRight">Post A Job</a>
-                <a href="" class="btn btn-outline-light py-sm-3 px-sm-5 rounded-pill animated slideInRight">Become A Freelancer</a>
+                <a href="<?php echo rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/post-job'; ?>" class="btn btn-light py-sm-3 px-sm-5 rounded-pill me-3 animated slideInRight">Post A Job</a>
+                <a href="<?php echo rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/register'; ?>" class="btn btn-outline-light py-sm-3 px-sm-5 rounded-pill animated slideInRight">Become A Freelancer</a>
             </div>
             <div class="col-lg-6 align-self-end text-center text-lg-end">
               <img class="img-fluid" src="img/lizbg.png" alt="" style="width: 100%; height: auto;">
