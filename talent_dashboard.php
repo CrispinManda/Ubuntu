@@ -1,9 +1,17 @@
-<?php include 'header.php'?>
 <?php
-// dashboard.php
-include 'session.php'
+// Turn on error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php"); // Redirect to login if not logged in
+    exit();
+}
 ?>
+
+<?php include 'header.php'; ?>
 
   <!--  Body Wrapper -->
   <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
@@ -125,7 +133,7 @@ include 'session.php'
       <div class="container-fluid">
                         <div class="row">
                     <!-- Dashboard Cards -->
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Users</h5>
@@ -133,7 +141,7 @@ include 'session.php'
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Freelancers</h5>
@@ -141,7 +149,7 @@ include 'session.php'
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Jobs</h5>
@@ -149,14 +157,14 @@ include 'session.php'
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Earnings</h5>
-                                <p class="card-text">$10,000</p>
-                            </div>
-                        </div>
-                    </div>
+                    <!--<div class="col-md-3">-->
+                    <!--    <div class="card">-->
+                    <!--        <div class="card-body">-->
+                    <!--            <h5 class="card-title">Earnings</h5>-->
+                    <!--            <p class="card-text">$10,000</p>-->
+                    <!--        </div>-->
+                    <!--    </div>-->
+                    <!--</div>-->
                 </div>
                  <!--  Row 1 -->
                 <div class="row mt-4">
@@ -214,8 +222,4 @@ include 'session.php'
   <script src="./assets/libs/simplebar/dist/simplebar.js"></script>
   <script src="./assets/js/dashboard.js"></script>
 </body>
-
 </html>
-
-
-
