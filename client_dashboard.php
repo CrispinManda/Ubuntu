@@ -156,51 +156,54 @@ if (!isset($_SESSION['user_id'])) {
                     <!--</div>-->
                 </div>
                  <!--  Row 1 -->
-                <div class="row mt-4">
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-header">
-                                User Management
-                            </div>
-                            <div class="card-body">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Role</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>John Doe</td>
-                                            <td>john@example.com</td>
-                                            <td>Admin</td>
-                                            <td>
-                                                <!-- <a href="#" class="btn btn-primary btn-sm">Edit</a> -->
-                                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Jane Smith</td>
-                                            <td>jane@example.com</td>
-                                            <td>Freelancer</td>
-                                            <td>
-                                                <!-- <a href="#" class="btn btn-primary btn-sm">Edit</a> -->
-                                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                                            </td>
-                                        </tr>
-                                        <!-- Additional rows as needed -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+              <div class="row mt-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                User Management
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>John Doe</td>
+                                <td>john@example.com</td>
+                                <td>Admin</td>
+                                <td>
+                                    <!-- <a href="#" class="btn btn-primary btn-sm">Edit</a> -->
+                                    <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Jane Smith</td>
+                                <td>jane@example.com</td>
+                                <td>Freelancer</td>
+                                <td>
+                                    <!-- <a href="#" class="btn btn-primary btn-sm">Edit</a> -->
+                                    <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                            <!-- Additional rows as needed -->
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     </div>
   </div>
   <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
