@@ -12,16 +12,45 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Fetch all job postings from the database
+// Check if the job ID is provided
+if (!isset($_GET['job_id'])) {
+    header("Location: jobs.php"); // Redirect to jobs list if no job ID
+    exit();
+}
+
+$job_id = $conn->real_escape_string($_GET['job_id']);
+
+// Fetch the job details from the database
 $sql = "SELECT job_postings.*, users.name, skills.skill_name 
         FROM job_postings 
         JOIN users ON job_postings.user_id = users.user_id 
         JOIN skills ON job_postings.skill_id = skills.skill_id 
-        ORDER BY created_at DESC";
-$jobs = $conn->query($sql);
-// Check if the query was successful
-if ($jobs === false) {
-    die("Error executing query: " . $conn->error);
+        WHERE job_id = '$job_id'";
+$job = $conn->query($sql)->fetch_assoc();
+
+if (!$job) {
+    header("Location: jobs."); // Redirect to jobs list if job not found
+    exit();
+}
+
+// Handle job application
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
+    $applicant_id = $_SESSION['user_id'];
+    
+    // Check if user has already applied for this job
+    $check_sql = "SELECT * FROM applications WHERE job_id = '$job_id' AND user_id = '$applicant_id'";
+    $result = $conn->query($check_sql);
+    
+    if ($result->num_rows > 0) {
+        $message = "<div class='alert alert-warning'>You have already applied for this job.</div>";
+    } else {
+        $apply_sql = "INSERT INTO applications (job_id, user_id) VALUES ('$job_id', '$applicant_id')";
+        if ($conn->query($apply_sql) === TRUE) {
+            $message = "<div class='alert alert-success'>You have successfully applied for the job!</div>";
+        } else {
+            $message = "<div class='alert alert-danger'>Error: " . $conn->error . "</div>";
+        }
+    }
 }
 
 
@@ -220,20 +249,22 @@ if ($conn) {
         </div>
         <!--  Row 1 -->
         <!-- User Management Table -->
-         <div class="container mt-5">
-                 <h2>Job Listings</h2>
-                 <?php while ($job = $jobs->fetch_assoc()): ?>
-                     <div class="card mb-3">
-                         <div class="card-body">
-                             <h5 class="card-title"><?php echo htmlspecialchars($job['title']); ?></h5>
-                             <p class="card-text"><?php echo htmlspecialchars(substr($job['description'], 0, 150)); ?>...</p>
-                             <p class="card-text"><small class="text-muted">Posted by <?php echo htmlspecialchars($job['name']); ?> on <?php echo htmlspecialchars($job['created_at']); ?></small></p>
-                             <p class="card-text"><strong>Skill Required:</strong> <?php echo htmlspecialchars($job['skill_name']); ?></p>
-                             <a href="job_details.php?job_id=<?php echo $job['job_id']; ?>" class="btn btn-primary">View Details</a>
-                         </div>
-                     </div>
-                 <?php endwhile; ?>
-             </div>
+
+        <div class="container mt-5">
+        <?php if (isset($message)) { echo $message; } ?>
+        <h2><?php echo htmlspecialchars($job['title']); ?></h2>
+        <p><strong>Posted by:</strong> <?php echo htmlspecialchars($job['name']); ?> on <?php echo htmlspecialchars($job['created_at']); ?></p>
+        <p><strong>Required Skill:</strong> <?php echo htmlspecialchars($job['skill_name']); ?></p>
+        <p><?php echo nl2br(htmlspecialchars($job['description'])); ?></p>
+
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <form method="POST" action="">
+                <button type="submit" class="btn btn-success">Apply for this Job</button>
+            </form>
+        <?php else: ?>
+            <p><a href="login.php" class="btn btn-primary">Log in to Apply</a></p>
+        <?php endif; ?>
+    </div>
 
 
 </div>
