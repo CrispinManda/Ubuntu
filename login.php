@@ -6,6 +6,7 @@ require_once 'db.php';
 
 // Initialize variables for messages
 $error_message = '';
+$success_message = '';
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -29,21 +30,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error_message = 'Invalid email or password. You do not have an account? <a href="register">Register</a>.';
         } else {
             // Start session and set user info
-            session_start();
             $_SESSION['user_id'] = $user_id;
             $_SESSION['role_id'] = $role_id;
 
+            // Set success message
+            $success_message = 'Login successful! Redirecting...';
+
+            // Delay the redirection using JavaScript
+            echo "<script>
+                setTimeout(function() {";
+
             // Redirect based on role
             if ($role_id == 1) { // Example role ID for 'talent'
-                header('Location: talent_dashboard');
+                echo "window.location.href = 'talent_dashboard';";
             } elseif ($role_id == 2) { // Example role ID for 'client_hiring'
-                header('Location: client_dashboard');
+                echo "window.location.href = 'client_dashboard';";
             } elseif ($role_id == 3) { // Example role ID for 'admin'
-                header('Location: admin_dashboard');
+                echo "window.location.href = 'admin_dashboard';";
             } else {
-                $error_message = 'Unknown role.';
+                echo "alert('Unknown role.');";
             }
-            exit();
+
+            echo "}, 3000); // 3 seconds delay
+            </script>";
         }
 
         $stmt->close();
@@ -70,6 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <!-- Display error message -->
                 <?php if (!empty($error_message)): ?>
                     <div class="alert alert-danger"><?php echo $error_message; ?></div>
+                <?php endif; ?>
+
+                <!-- Display success message -->
+                <?php if (!empty($success_message)): ?>
+                    <div class="alert alert-success"><?php echo $success_message; ?></div>
                 <?php endif; ?>
 
                 <form method="POST" action="">
@@ -104,10 +118,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
 
-
-
-  <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
-  <script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/libs/jquery/dist/jquery.min.js"></script>
+<script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

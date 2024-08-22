@@ -19,7 +19,7 @@ if ($conn) {
     $sql = "SELECT users.user_id, users.name, users.email, roles.role_name 
             FROM users 
             INNER JOIN roles ON users.role_id = roles.role_id 
-            WHERE users.role_id != 3";
+            WHERE users.role_id = 1";
 
     if (!empty($search)) {
         $sql .= " AND (users.name LIKE '%$search%' OR users.email LIKE '%$search%' OR roles.role_name LIKE '%$search%')";
@@ -28,24 +28,6 @@ if ($conn) {
     $sql .= " ORDER BY users.created_at DESC"; // Order by registration date (latest first)
 
     $users = $conn->query($sql);
-
-    $user_id = $_SESSION['user_id'];
-//$username = $_SESSION['user_id']; // Assuming username is stored in session
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $conn->real_escape_string(trim($_POST['title']));
-    $description = $conn->real_escape_string(trim($_POST['description']));
-    $skill_id = $conn->real_escape_string($_POST['skill_id']);
-
-    // Insert job posting into the database
-    $sql = "INSERT INTO job_postings (user_id, title, description, skill_id) VALUES ('$user_id', '$title', '$description', '$skill_id')";
-    
-    if ($conn->query($sql) === TRUE) {
-        $message = "<div class='alert alert-success'>Job posted successfully!</div>";
-    } else {
-        $message = "<div class='alert alert-danger'>Error: " . $sql . "<br>" . $conn->error . "</div>";
-    }
-}
     
     // Fetch count of different user roles and jobs
     $userCount = $conn->query("SELECT COUNT(*) as count FROM users WHERE users.role_id != 3")->fetch_assoc()['count'];
@@ -135,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </span>
                         </a>
                     </li>
-                    <li class ='sidebar-item'>
+                                        <li class ='sidebar-item'>
                         <a class="sidebar-link" href="skills" aria-expanded="false">
                             <span>
                                 <i class="ti ti-list-check fs-6"></i>
@@ -163,6 +145,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <i class="ti ti-menu-2"></i>
                         </a>
                     </li>
+                    <form method="GET" action="admin_dashboard" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="Search users by name, email, or role" value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>">
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </div>
+                    </form>
                 </ul>
                 <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                     <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
@@ -224,45 +212,63 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         <!--  Row 1 -->
         <!-- User Management Table -->
-
-   <div class="container mt-5">
-        <?php
-        if (!empty($message)) {
-            echo $message;
-        }
-        ?>
-        <h2>Create Job Posting</h2>
-        <form method="POST" action="">
-            <div class="mb-3">
-                <label for="title" class="form-label">Job Title</label>
-                <input type="text" class="form-control" id="title" name="title" required>
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Job Description</label>
-                <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="skill_id" class="form-label">Required Skill</label>
-                <select class="form-select" id="skill_id" name="skill_id" required>
-                    <?php
-                    $skills = $conn->query("SELECT skill_id, skill_name FROM skills");
-                    while ($skill = $skills->fetch_assoc()) {
-                        echo "<option value='" . $skill['skill_id'] . "'>" . $skill['skill_name'] . "</option>";
-                    }
-                    ?>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="posted_by" class="form-label">Posted By</label>
-                <input type="text" class="form-control" id="posted_by" name="posted_by" value="<?php echo $username; ?>" readonly>
-            </div>
-            <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
-            <button type="submit" class="btn btn-primary">Post Job</button>
-        </form>
-    </div>
-
+        <div class="row mt-4">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        Talents
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($users && $users->num_rows > 0) {
+                while ($row = $users->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . $row['user_id'] . "</td>";
+                    echo "<td>" . $row['name'] . "</td>";
+                    echo "<td>" . $row['email'] . "</td>";
+                    echo "<td>" . $row['role_name'] . "</td>";
+                    echo "<td>
+                        <button class='btn btn-danger btn-sm' onclick='confirmDelete(" . $row['user_id'] . ")'>Delete</button>
+                        </td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='5' class='text-center'>No users found</td></tr>";
+            }
+            ?>
+        </tbody>
+    </table>
 </div>
 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+</div>
+
+    <!-- JavaScript for confirmation -->
+    <script>
+    function confirmDelete(userId) {
+        if (confirm("Are you sure you want to delete this user?")) {
+            // Redirect to delete_user.php
+            window.location.href = 'delete_user?id=' + userId;
+        }
+    }
+    </script>
     <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./assets/js/sidebarmenu.js"></script>

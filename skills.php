@@ -5,48 +5,34 @@ include 'db.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+
+
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login"); // Redirect to login if not logged in
-    exit();
-}
-
-$search = isset($_GET['search']) ? $_GET['search'] : '';
-
-if ($conn) {
-    // Fetch non-admin users with search functionality and order by latest registration
-    $sql = "SELECT users.user_id, users.name, users.email, roles.role_name 
-            FROM users 
-            INNER JOIN roles ON users.role_id = roles.role_id 
-            WHERE users.role_id != 3";
-
-    if (!empty($search)) {
-        $sql .= " AND (users.name LIKE '%$search%' OR users.email LIKE '%$search%' OR roles.role_name LIKE '%$search%')";
-    }
-
-    $sql .= " ORDER BY users.created_at DESC"; // Order by registration date (latest first)
-
-    $users = $conn->query($sql);
-
-    $user_id = $_SESSION['user_id'];
-//$username = $_SESSION['user_id']; // Assuming username is stored in session
+$message = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $conn->real_escape_string(trim($_POST['title']));
-    $description = $conn->real_escape_string(trim($_POST['description']));
-    $skill_id = $conn->real_escape_string($_POST['skill_id']);
+    $skill_name = $conn->real_escape_string(trim($_POST['skill_name']));
 
-    // Insert job posting into the database
-    $sql = "INSERT INTO job_postings (user_id, title, description, skill_id) VALUES ('$user_id', '$title', '$description', '$skill_id')";
-    
-    if ($conn->query($sql) === TRUE) {
-        $message = "<div class='alert alert-success'>Job posted successfully!</div>";
+    // Check if the skill already exists
+    $check_sql = "SELECT * FROM skills WHERE skill_name = '$skill_name'";
+    $result = $conn->query($check_sql);
+
+    if ($result->num_rows > 0) {
+        $message = "<div class='alert alert-danger'>Error: Skill already exists.</div>";
     } else {
-        $message = "<div class='alert alert-danger'>Error: " . $sql . "<br>" . $conn->error . "</div>";
+        // Insert the new skill
+        $sql = "INSERT INTO skills (skill_name) VALUES ('$skill_name')";
+        if ($conn->query($sql) === TRUE) {
+            $message = "<div class='alert alert-success'>New skill added successfully!</div>";
+        } else {
+            $message = "<div class='alert alert-danger'>Error: " . $sql . "<br>" . $conn->error . "</div>";
+        }
     }
 }
-    
+
+if ($conn) {
+
     // Fetch count of different user roles and jobs
     $userCount = $conn->query("SELECT COUNT(*) as count FROM users WHERE users.role_id != 3")->fetch_assoc()['count'];
     $freelancerCount = $conn->query("SELECT COUNT(*) as count FROM users WHERE role_id = 1")->fetch_assoc()['count'];
@@ -135,8 +121,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </span>
                         </a>
                     </li>
-                    <li class ='sidebar-item'>
-                        <a class="sidebar-link" href="skills" aria-expanded="false">
+                                        <li class ='sidebar-item'>
+                        <a class="sidebar-link" href="task" aria-expanded="false">
                             <span>
                                 <i class="ti ti-list-check fs-6"></i>
                             </span>
@@ -225,43 +211,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <!--  Row 1 -->
         <!-- User Management Table -->
 
-   <div class="container mt-5">
+     <div class="container mt-5">
         <?php
         if (!empty($message)) {
             echo $message;
         }
         ?>
-        <h2>Create Job Posting</h2>
+        <h2>Add New Skill</h2>
         <form method="POST" action="">
             <div class="mb-3">
-                <label for="title" class="form-label">Job Title</label>
-                <input type="text" class="form-control" id="title" name="title" required>
+                <label for="skill_name" class="form-label">Skill Name</label>
+                <input type="text" class="form-control" id="skill_name" name="skill_name" required>
             </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Job Description</label>
-                <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="skill_id" class="form-label">Required Skill</label>
-                <select class="form-select" id="skill_id" name="skill_id" required>
-                    <?php
-                    $skills = $conn->query("SELECT skill_id, skill_name FROM skills");
-                    while ($skill = $skills->fetch_assoc()) {
-                        echo "<option value='" . $skill['skill_id'] . "'>" . $skill['skill_name'] . "</option>";
-                    }
-                    ?>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="posted_by" class="form-label">Posted By</label>
-                <input type="text" class="form-control" id="posted_by" name="posted_by" value="<?php echo $username; ?>" readonly>
-            </div>
-            <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
-            <button type="submit" class="btn btn-primary">Post Job</button>
+            <button type="submit" class="btn btn-primary">Add Skill</button>
         </form>
     </div>
-
-</div>
 
     <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -20,7 +20,7 @@ if (!isset($_SESSION['user_id'])) {
       <!-- Sidebar scroll-->
       <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
-          <a href="<?php echo rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/'; ?>" class="text-nowrap logo-img">
+          <a href="<?php echo rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/client_dashboard'; ?>" class="text-nowrap logo-img">
             <img src="./assets/images/logos/genz-crop.png" style="width: 150px; height: auto;" />
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
@@ -34,23 +34,72 @@ if (!isset($_SESSION['user_id'])) {
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
               <span class="hide-menu">Home</span>
             </li>
-            <li class="sidebar-item">
+            <!-- <li class="sidebar-item">
               <a class="sidebar-link" href="#" aria-expanded="false">
                 <span>
                   <i class="ti ti-layout-dashboard"></i>
                 </span>
                 <span class="hide-menu">Dashboard</span>
               </a>
-            </li>
+            </li> -->
             <li class="sidebar-item">
-              <a class="sidebar-link" href="jobs" aria-expanded="false">
-                <span>
-                  <i class="ti ti-cards"></i>
-                </span>
-                <span class="hide-menu">Jobs</span>
-              </a>
-            </li>
-                        <li class='sidebar-item'>
+    <a class="sidebar-link" href="#" aria-expanded="false">
+        <span>
+            <i class="ti ti-cards"></i>
+        </span>
+        <span class="mb-0 fs-3">Jobs</span>
+    </a>
+    <!-- Dropdown Menu -->
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="jobs">View Jobs</a></li>
+        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#jobPostingModal">Post a Job</a></li>
+    </ul>
+</li>
+
+<style>
+  /* Sidebar dropdown menu styling */
+.sidebar-item {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+}
+
+.sidebar-item:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu .dropdown-item {
+    display: block;
+    padding: 0.5rem 1rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    color: #16181b;
+    background-color: #f8f9fa;
+}
+
+</style>
+
+              <li class='sidebar-item'>
               <a class="sidebar-link" href="Profile" aria-expanded="false">
                 <span>
                   <i class="ti ti-user fs-6"></i>
@@ -146,16 +195,7 @@ if (!isset($_SESSION['user_id'])) {
                             </div>
                         </div>
                     </div>
-                    <!--<div class="col-md-4">-->
-                    <!--    <div class="card">-->
-                    <!--        <div class="card-body">-->
-                    <!--            <h5 class="card-title">Earnings</h5>-->
-                    <!--            <p class="card-text">$10,000</p>-->
-                    <!--        </div>-->
-                    <!--    </div>-->
-                    <!--</div>-->
-                </div>
-                 <!--  Row 1 -->
+
               <div class="row mt-4">
     <div class="col">
         <div class="card">

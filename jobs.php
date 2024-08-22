@@ -28,24 +28,6 @@ if ($conn) {
     $sql .= " ORDER BY users.created_at DESC"; // Order by registration date (latest first)
 
     $users = $conn->query($sql);
-
-    $user_id = $_SESSION['user_id'];
-//$username = $_SESSION['user_id']; // Assuming username is stored in session
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $conn->real_escape_string(trim($_POST['title']));
-    $description = $conn->real_escape_string(trim($_POST['description']));
-    $skill_id = $conn->real_escape_string($_POST['skill_id']);
-
-    // Insert job posting into the database
-    $sql = "INSERT INTO job_postings (user_id, title, description, skill_id) VALUES ('$user_id', '$title', '$description', '$skill_id')";
-    
-    if ($conn->query($sql) === TRUE) {
-        $message = "<div class='alert alert-success'>Job posted successfully!</div>";
-    } else {
-        $message = "<div class='alert alert-danger'>Error: " . $sql . "<br>" . $conn->error . "</div>";
-    }
-}
     
     // Fetch count of different user roles and jobs
     $userCount = $conn->query("SELECT COUNT(*) as count FROM users WHERE users.role_id != 3")->fetch_assoc()['count'];
@@ -135,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </span>
                         </a>
                     </li>
-                    <li class ='sidebar-item'>
+                                        <li class ='sidebar-item'>
                         <a class="sidebar-link" href="skills" aria-expanded="false">
                             <span>
                                 <i class="ti ti-list-check fs-6"></i>
@@ -163,6 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <i class="ti ti-menu-2"></i>
                         </a>
                     </li>
+                    <a href="post-job"><button type="button" class="btn btn-primary btn-lg">Post a New job</button></a>
                 </ul>
                 <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                     <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
@@ -224,42 +207,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         <!--  Row 1 -->
         <!-- User Management Table -->
+         <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">Job title</h5>
+                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.  <br><a href="">Read More</a></p>
+                  <p class="card-text"><small class="text-muted">Posted 3 mins ago</small></p>
+                </div>
+              </div>
+           </div>
+          </div>
 
-   <div class="container mt-5">
-        <?php
-        if (!empty($message)) {
-            echo $message;
-        }
-        ?>
-        <h2>Create Job Posting</h2>
-        <form method="POST" action="">
-            <div class="mb-3">
-                <label for="title" class="form-label">Job Title</label>
-                <input type="text" class="form-control" id="title" name="title" required>
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Job Description</label>
-                <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="skill_id" class="form-label">Required Skill</label>
-                <select class="form-select" id="skill_id" name="skill_id" required>
-                    <?php
-                    $skills = $conn->query("SELECT skill_id, skill_name FROM skills");
-                    while ($skill = $skills->fetch_assoc()) {
-                        echo "<option value='" . $skill['skill_id'] . "'>" . $skill['skill_name'] . "</option>";
-                    }
-                    ?>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="posted_by" class="form-label">Posted By</label>
-                <input type="text" class="form-control" id="posted_by" name="posted_by" value="<?php echo $username; ?>" readonly>
-            </div>
-            <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
-            <button type="submit" class="btn btn-primary">Post Job</button>
-        </form>
-    </div>
+            <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">Job title</h5>
+                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.  <br><a href="">Read More</a></p>
+                  <p class="card-text"><small class="text-muted">Posted 3 mins ago</small></p>
+                </div>
+              </div>
+           </div>
+          </div>
+
+
+
+
+
+                    
+               
+           
+        
+
+
 
 </div>
 

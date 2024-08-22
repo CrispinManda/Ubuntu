@@ -1,7 +1,5 @@
-
 <?php include 'header.php'?>
 <?php require 'db.php';?>
-
 
 <?php
 
@@ -48,9 +46,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->bind_param('sssi', $name, $email, $hashed_password, $role_id);
 
                 if ($stmt->execute()) {
-                    header("Location: login");
-            exit(); // Ensure that the script stops executing after the redirect
-                    // $success_message = 'Registration successful. You can now <a href="login">sign in</a>.';
+                    // Set success message
+                    $success_message = 'Registration successful! Redirecting to login page...';
+
+                    // JavaScript for delaying the redirect
+                    echo "<script>
+                        setTimeout(function() {
+                            window.location.href = 'login';
+                        }, 3000); // 3 seconds delay
+                    </script>";
                 } else {
                     $error_message = 'An error occurred: ' . $stmt->error;
                 }
@@ -122,10 +126,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
 
-
-
-    <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
-  <script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./assets/libs/jquery/dist/jquery.min.js"></script>
+<script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

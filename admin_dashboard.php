@@ -1,17 +1,48 @@
 <?php
+include 'db.php'; 
+
 // Turn on error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php"); // Redirect to login if not logged in
+// Check if the user is logged in and is an admin
+if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 3) {
+    header("Location: login"); // Redirect to login if not logged in or not an admin
     exit();
+}
+
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+
+if ($conn) {
+    // Fetch non-admin users with search functionality and order by latest registration
+    $sql = "SELECT users.user_id, users.name, users.email, roles.role_name 
+            FROM users 
+            INNER JOIN roles ON users.role_id = roles.role_id 
+            WHERE users.role_id != 3";
+
+    if (!empty($search)) {
+        $sql .= " AND (users.name LIKE '%$search%' OR users.email LIKE '%$search%' OR roles.role_name LIKE '%$search%')";
+    }
+
+    $sql .= " ORDER BY users.created_at DESC"; // Order by registration date (latest first)
+
+    $users = $conn->query($sql);
+    
+    // Fetch count of different user roles and jobs
+    $userCount = $conn->query("SELECT COUNT(*) as count FROM users WHERE users.role_id != 3")->fetch_assoc()['count'];
+    $freelancerCount = $conn->query("SELECT COUNT(*) as count FROM users WHERE role_id = 1")->fetch_assoc()['count'];
+    $clientsCount = $conn->query("SELECT COUNT(*) as count FROM users WHERE role_id = 2")->fetch_assoc()['count'];
+    $jobCount = $conn->query("SELECT COUNT(*) as count FROM job_postings")->fetch_assoc()['count'];
+} else {
+    die("Connection failed: " . $conn->connect_error);
 }
 ?>
 
 <?php include 'header.php'; ?>
+
+<!-- Rest of your HTML code here -->
 
 <!--  Body Wrapper -->
 <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
@@ -21,7 +52,7 @@ if (!isset($_SESSION['user_id'])) {
         <!-- Sidebar scroll-->
         <div>
             <div class="brand-logo d-flex align-items-center justify-content-between">
-                <a href="<?php echo rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/'; ?>" class="text-nowrap logo-img">
+                <a href="<?php echo rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/admin_dashboard'; ?>" class="text-nowrap logo-img">
                     <img src="./assets/images/logos/genz-crop.png" style="width: 150px; height: auto;" />
                 </a>
                 <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
@@ -87,6 +118,16 @@ if (!isset($_SESSION['user_id'])) {
                             </span>
                         </a>
                     </li>
+                                        <li class ='sidebar-item'>
+                        <a class="sidebar-link" href="skills" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-list-check fs-6"></i>
+                            </span>
+                            <span>
+                                <p class="mb-0 fs-3">skills</p>
+                            </span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
             <!-- End Sidebar navigation -->
@@ -105,12 +146,12 @@ if (!isset($_SESSION['user_id'])) {
                             <i class="ti ti-menu-2"></i>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-icon-hover" href="javascript:void(0)">
-                            <i class="ti ti-bell-ringing"></i>
-                            <div class="notification bg-primary rounded-circle"></div>
-                        </a>
-                    </li>
+                    <form method="GET" action="admin_dashboard" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="Search users by name, email, or role" value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>">
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </div>
+                    </form>
                 </ul>
                 <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                     <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
@@ -134,93 +175,101 @@ if (!isset($_SESSION['user_id'])) {
             </nav>
         </header>
         <!--  Header End -->
-        <div class="container-fluid">
-            <div class="row">
-                <!-- Dashboard Cards -->
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Users</h5>
-                            <p class="card-text">150</p>
-                        </div>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Dashboard Cards -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Users</h5>
+                        <p class="card-text"><?php echo $userCount; ?></p>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Freelancers</h5>
-                            <p class="card-text">85</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Jobs</h5>
-                            <p class="card-text">20</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- <div class="col-md-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Earnings</h5>
-                            <p class="card-text">$10,000</p>
-                        </div>
-                    </div>
-                </div> -->
             </div>
-            <!--  Row 1 -->
-            <div class="row mt-4">
-    <div class="col">
-        <div class="card">
-            <div class="card-header">
-                User Management
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Freelancers</h5>
+                        <p class="card-text"><?php echo $freelancerCount; ?></p>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>John Doe</td>
-                                <td>john@example.com</td>
-                                <td>Admin</td>
-                                <td>
-                                    <!-- <a href="#" class="btn btn-primary btn-sm">Edit</a> -->
-                                    <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Jane Smith</td>
-                                <td>jane@example.com</td>
-                                <td>Freelancer</td>
-                                <td>
-                                    <!-- <a href="#" class="btn btn-primary btn-sm">Edit</a> -->
-                                    <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                                </td>
-                            </tr>
-                            <!-- Additional rows as needed -->
-                        </tbody>
-                    </table>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Clients</h5>
+                        <p class="card-text"><?php echo $clientsCount; ?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Jobs</h5>
+                        <p class="card-text"><?php echo $jobCount; ?></p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        <!--  Row 1 -->
+        <!-- User Management Table -->
+        <div class="row mt-4">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        User Management
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($users && $users->num_rows > 0) {
+                while ($row = $users->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . $row['user_id'] . "</td>";
+                    echo "<td>" . $row['name'] . "</td>";
+                    echo "<td>" . $row['email'] . "</td>";
+                    echo "<td>" . $row['role_name'] . "</td>";
+                    echo "<td>
+                        <button class='btn btn-danger btn-sm' onclick='confirmDelete(" . $row['user_id'] . ")'>Delete</button>
+                        </td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='5' class='text-center'>No users found</td></tr>";
+            }
+            ?>
+        </tbody>
+    </table>
 </div>
 
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
+</div>
+</div>
+
+    <!-- JavaScript for confirmation -->
+    <script>
+    function confirmDelete(userId) {
+        if (confirm("Are you sure you want to delete this user?")) {
+            // Redirect to delete_user.php
+            window.location.href = 'delete_user?id=' + userId;
+        }
+    }
+    </script>
     <script src="./assets/libs/jquery/dist/jquery.min.js"></script>
     <script src="./assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./assets/js/sidebarmenu.js"></script>

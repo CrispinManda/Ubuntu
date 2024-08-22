@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php"); // Redirect to login if not logged in
+    header("Location: login"); // Redirect to login if not logged in
     exit();
 }
 ?>
@@ -21,7 +21,7 @@ if (!isset($_SESSION['user_id'])) {
       <!-- Sidebar scroll-->
       <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
-          <a href="<?php echo rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/'; ?>" class="text-nowrap logo-img">
+          <a href="<?php echo rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\') . '/talent_dashboard'; ?>" class="text-nowrap logo-img">
             <img src="./assets/images/logos/genz-crop.png" style="width: 150px; height: auto;" />
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
