@@ -111,6 +111,16 @@ if ($conn) {
                             </span>
                         </a>
                     </li>
+                    <li class='sidebar-item'>
+                        <a class="sidebar-link" href="application" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-user fs-6"></i>
+                            </span>
+                            <span>
+                                <p class="mb-0 fs-3">Application</p>
+                            </span>
+                        </a>
+                    </li>
                     <li class ='sidebar-item'>
                         <a class="sidebar-link" href="task" aria-expanded="false">
                             <span>

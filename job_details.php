@@ -29,9 +29,9 @@ $sql = "SELECT job_postings.*, users.name, skills.skill_name
 $job = $conn->query($sql)->fetch_assoc();
 
 if (!$job) {
-    header("Location: jobs."); // Redirect to jobs list if job not found
-    exit();
+    die("Job not found.");
 }
+
 
 // Handle job application
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
@@ -213,7 +213,6 @@ if ($conn) {
         <!--  Header End -->
     <div class="container-fluid">
         <div class="row">
-            <!-- Dashboard Cards -->
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-body">
@@ -262,10 +261,9 @@ if ($conn) {
                 <button type="submit" class="btn btn-success">Apply for this Job</button>
             </form>
         <?php else: ?>
-            <p><a href="login.php" class="btn btn-primary">Log in to Apply</a></p>
+            <p><a href="login" class="btn btn-primary">Log in to Apply</a></p>
         <?php endif; ?>
     </div>
-
 
 </div>
 
